@@ -112,10 +112,10 @@ index 000000000000..89f9edea2c01
 +clean-files := *.dtb
 diff --git a/arch/arm/boot/dts/sda429-hoki/sda429-hoki.dts b/arch/arm/boot/dts/sda429-hoki/sda429-hoki.dts
 new file mode 100644
-index 000000000000..7c47bd67f713
+index 000000000000..b89c0006c316
 --- /dev/null
 +++ b/arch/arm/boot/dts/sda429-hoki/sda429-hoki.dts
-@@ -0,0 +1,11722 @@
+@@ -0,0 +1,12134 @@
 +/dts-v1/;
 +
 +/ {
@@ -1602,7 +1602,7 @@ index 000000000000..7c47bd67f713
 +
 +					mux {
 +						pins = "gpio6\0gpio7";
-+						function = "gpio";
++						function = "blsp_i2c2";
 +					};
 +
 +					config {
@@ -1672,7 +1672,7 @@ index 000000000000..7c47bd67f713
 +
 +					mux {
 +						pins = "gpio14\0gpio15";
-+						function = "gpio";
++						function = "blsp_i2c4";
 +					};
 +
 +					config {
@@ -3116,32 +3116,34 @@ index 000000000000..7c47bd67f713
 +			tlmm_gpio_key {
 +
 +				gpio_key_active {
-+					linux,phandle = <0x16b>;
-+					phandle = <0x16b>;
++					linux,phandle = <0x28b>;
++					phandle = <0x28b>;
 +
 +					mux {
-+						pins = "gpio74\0gpio35\0gpio126";
++						pins = "gpio35";
 +						function = "gpio";
 +					};
 +
 +					config {
-+						pins = "gpio74\0gpio35\0gpio126";
++						pins = "gpio35";
 +						bias-pull-up;
++						drive-strength = <0x02>;
 +					};
 +				};
 +
 +				gpio_key_suspend {
-+					linux,phandle = <0x16c>;
-+					phandle = <0x16c>;
++					linux,phandle = <0x28c>;
++					phandle = <0x28c>;
 +
 +					mux {
-+						pins = "gpio74\0gpio35\0gpio126";
++						pins = "gpio35";
 +						function = "gpio";
 +					};
 +
 +					config {
-+						pins = "gpio74\0gpio35\0gpio126";
++						pins = "gpio35";
 +						bias-pull-up;
++						drive-strength = <0x02>;
 +					};
 +				};
 +			};
@@ -3500,6 +3502,44 @@ index 000000000000..7c47bd67f713
 +					drive-strength = <0x02>;
 +				};
 +			};
++
++			smart_pa_int {
++
++				pa_int_default {
++					linux,phandle = <0x294>;
++					phandle = <0x294>;
++
++					mux {
++						pins = "gpio73\0gpio73";
++						function = "gpio";
++					};
++
++					config {
++						pins = "gpio73\0gpio73";
++						drive-strength = <0x04>;
++						bias-disable;
++					};
++				};
++			};
++
++			smart_pa_rst {
++
++				pa_rst_default {
++					linux,phandle = <0x295>;
++					phandle = <0x295>;
++
++					mux {
++						pins = "gpio68\0gpio68";
++						function = "gpio";
++					};
++
++					config {
++						pins = "gpio68\0gpio68";
++						drive-strength = <0x04>;
++						bias-disable;
++					};
++				};
++			};
 +		};
 +
 +		qcom,sps-dma@7884000 {
@@ -3553,9 +3593,43 @@ index 000000000000..7c47bd67f713
 +			pinctrl-names = "i2c_active\0i2c_sleep";
 +			pinctrl-0 = <0x4b>;
 +			pinctrl-1 = <0x4c>;
-+			status = "okay";
++			status = "ok";
 +			linux,phandle = <0x1b1>;
 +			phandle = <0x1b1>;
++
++			nxp_smartpa@34 {
++				status = "okay";
++				compatible = "nxp,tfa98xx";
++				reg = <0x34>;
++				reset-gpio = <0x59 0x44 0x00>;
++				irq-gpio = <0x59 0x49 0x00>;
++				pinctrl-names = "default";
++				pinctrl-0 = <0x294 0x295>;
++				dvdd-supply = <0x16a>;
++				dvdd-voltage = <0x1b7740 0x1b7740>;
++				dvdd-current = <0x3a98>;
++				linux,phandle = <0x293>;
++				phandle = <0x293>;
++			};
++
++			pn544@28 {
++				compatible = "nxp,pn544";
++				reg = <0x28>;
++				nxp,pn544-irq = <0x59 0x7e 0x00>;
++				nxp,pn544-ven = <0x59 0x7d 0x00>;
++				nxp,pn544-fw-dwnld = <0x59 0x82 0x00>;
++				nxp,pn544-clkreq = <0x63 0x04 0x00>;
++				nxp,pn544-ese-pwr = <0x59 0x5d 0x00>;
++				interrupt-parent = <0x59>;
++				qcom,clk-src = "BBCLK2";
++				interrupts = <0x7e 0x00>;
++				interrupt-names = "nfc_irq";
++				pinctrl-names = "nfc_active\0nfc_suspend";
++				pinctrl-0 = <0x64 0x65 0x28d>;
++				pinctrl-1 = <0x67 0x68>;
++				clocks = <0x09 0x20>;
++				clock-names = "ref_clk";
++			};
 +		};
 +
 +		i2c@78b7000 {
@@ -3577,8 +3651,8 @@ index 000000000000..7c47bd67f713
 +			pinctrl-0 = <0x4d>;
 +			pinctrl-1 = <0x4e>;
 +			status = "disabled";
-+			linux,phandle = <0x1b2>;
-+			phandle = <0x1b2>;
++			linux,phandle = <0x298>;
++			phandle = <0x298>;
 +		};
 +
 +		i2c@78b8000 {
@@ -3599,9 +3673,27 @@ index 000000000000..7c47bd67f713
 +			pinctrl-names = "i2c_active\0i2c_sleep";
 +			pinctrl-0 = <0x4f>;
 +			pinctrl-1 = <0x50>;
-+			status = "disabled";
++			status = "ok";
 +			linux,phandle = <0x1b3>;
 +			phandle = <0x1b3>;
++
++			raydium@39 {
++				compatible = "raydium,raydium-ts-ub128blx01\0raydium,raydium-ts-h120blx01";
++				reg = <0x39>;
++				interrupt-parent = <0x59>;
++				interrupts = <0x62 0x2002>;
++				vcc_i2c-supply = <0x97>;
++				raydium,reset-gpio = <0x59 0x40 0x00>;
++				raydium,irq-gpio = <0x59 0x41 0x2002>;
++				pinctrl-names = "pmx_ts_active\0pmx_ts_suspend\0pmx_ts_release";
++				pinctrl-0 = <0x18d 0x18f>;
++				pinctrl-1 = <0x18e 0x190>;
++				pinctrl-2 = <0x191>;
++				raydium,display-coords = <0x00 0x00 0x1a0 0x1a0>;
++				raydium,hard-reset-delay-ms = <0x05>;
++				raydium,soft-reset-delay-ms = <0x168>;
++				raydium,num-max-touches = <0x02>;
++			};
 +		};
 +
 +		spi@78b5000 {
@@ -3624,9 +3716,79 @@ index 000000000000..7c47bd67f713
 +			pinctrl-1 = <0x52>;
 +			clock-names = "iface_clk\0core_clk";
 +			clocks = <0x48 0x2f 0x48 0x31>;
-+			status = "disabled";
++			status = "ok";
 +			linux,phandle = <0x1b4>;
 +			phandle = <0x1b4>;
++
++			spi_1_active {
++				linux,phandle = <0x29e>;
++				phandle = <0x29e>;
++
++				mux {
++					pins = "gpio0\0gpio1\0gpio2\0gpio3";
++					function = "blsp_spi1";
++				};
++
++				config {
++					pins = "gpio0\0gpio1\0gpio2\0gpio3";
++					drive-strength = <0x06>;
++					bias-disable;
++				};
++			};
++
++			spi_1_sleep {
++				linux,phandle = <0x29f>;
++				phandle = <0x29f>;
++
++				mux {
++					pins = "gpio0\0gpio1\0gpio2\0gpio3";
++					function = "gpio";
++				};
++
++				config {
++					pins = "gpio0\0gpio1\0gpio2\0gpio3";
++					drive-strength = <0x06>;
++					bias-disable;
++				};
++			};
++
++			spi_1_cs0_active {
++				linux,phandle = <0x2a0>;
++				phandle = <0x2a0>;
++
++				mux {
++					pins = "gpio2";
++					function = "blsp_spi1";
++				};
++
++				config {
++					pins = "gpio2";
++					drive-strength = <0x06>;
++					bias-pull-up;
++				};
++			};
++
++			spi_1_cs0_sleep {
++				linux,phandle = <0x2a1>;
++				phandle = <0x2a1>;
++
++				mux {
++					pins = "gpio2";
++					function = "gpio";
++				};
++
++				config {
++					pins = "gpio2";
++					drive-strength = <0x06>;
++					bias-pull-up;
++				};
++			};
++
++			p61@0 {
++				compatible = "nxp,p61";
++				reg = <0x00>;
++				spi-max-frequency = <0x927c00>;
++			};
 +		};
 +
 +		spi@78b6000 {
@@ -3676,8 +3838,8 @@ index 000000000000..7c47bd67f713
 +			clocks = <0x48 0x2f 0x48 0x35>;
 +			status = "ok";
 +			qcom,shared_ee;
-+			linux,phandle = <0x1b6>;
-+			phandle = <0x1b6>;
++			linux,phandle = <0x297>;
++			phandle = <0x297>;
 +
 +			qcom,bg-spi {
 +				compatible = "qcom,bg-spi";
@@ -3787,11 +3949,12 @@ index 000000000000..7c47bd67f713
 +				qcom,clk-src = "BBCLK2";
 +				interrupts = <0x11 0x00>;
 +				interrupt-names = "nfc_irq";
-+				pinctrl-names = "nfc_active\0nfc_suspend";
-+				pinctrl-0 = <0x64 0x65 0x66>;
++				pinctrl-names = "default\0suspend";
++				pinctrl-0 = <0x64 0x65 0x28d>;
 +				pinctrl-1 = <0x67 0x68>;
 +				clocks = <0x09 0x20>;
 +				clock-names = "ref_clk";
++				status = "disabled";
 +			};
 +		};
 +
@@ -4825,7 +4988,7 @@ index 000000000000..7c47bd67f713
 +				qcom,regulator-type = <0x00>;
 +				qcom,regulator-hw-type = "pmic4-ldo";
 +				qcom,hpm-min-load = <0x7530>;
-+				status = "okay";
++				status = "disabled";
 +				qcom,send-ipeak;
 +
 +				regulator-l2 {
@@ -5090,7 +5253,7 @@ index 000000000000..7c47bd67f713
 +				qcom,regulator-type = <0x00>;
 +				qcom,regulator-hw-type = "pmic4-ldo";
 +				qcom,hpm-min-load = <0x2710>;
-+				status = "okay";
++				status = "disabled";
 +				qcom,send-ipeak;
 +
 +				regulator-l14 {
@@ -5113,7 +5276,7 @@ index 000000000000..7c47bd67f713
 +				qcom,regulator-type = <0x00>;
 +				qcom,regulator-hw-type = "pmic4-ldo";
 +				qcom,hpm-min-load = <0x2710>;
-+				status = "okay";
++				status = "disabled";
 +				qcom,send-ipeak;
 +
 +				regulator-l15 {
@@ -5159,7 +5322,7 @@ index 000000000000..7c47bd67f713
 +				qcom,regulator-type = <0x00>;
 +				qcom,regulator-hw-type = "pmic4-ldo";
 +				qcom,hpm-min-load = <0x2710>;
-+				status = "okay";
++				status = "disabled";
 +				qcom,send-ipeak;
 +
 +				regulator-l17 {
@@ -5182,7 +5345,7 @@ index 000000000000..7c47bd67f713
 +				qcom,regulator-type = <0x00>;
 +				qcom,regulator-hw-type = "pmic4-ldo";
 +				qcom,hpm-min-load = <0x2710>;
-+				status = "okay";
++				status = "disabled";
 +				qcom,send-ipeak;
 +
 +				regulator-l18 {
@@ -5490,7 +5653,7 @@ index 000000000000..7c47bd67f713
 +			qcom,pil-self-auth;
 +			qcom,sequential-fw-load;
 +			qcom,override-acc-1 = <0x80800000>;
-+			qcom,smem-id = <421>;
++			qcom,smem-id = <0x1a5>;
 +			qcom,sysmon-id = <0x00>;
 +			qcom,ssctl-instance-id = <0x12>;
 +			memory-region = <0xb6>;
@@ -5518,7 +5681,7 @@ index 000000000000..7c47bd67f713
 +			HSUSB_1p8-supply = <0xaf>;
 +			HSUSB_3p3-supply = <0xba>;
 +			qcom,vdd-voltage-level = <0x00 0xc3500 0xc3500>;
-+			qcom,hsusb-otg-phy-init-seq = <0x43 0x80 0x06 0x82 0xffffffff>;
++			qcom,hsusb-otg-phy-init-seq = <0x73 0x80 0x3f 0x81 0x7f 0x82 0xffffffff>;
 +			qcom,hsusb-otg-phy-type = <0x03>;
 +			qcom,hsusb-otg-mode = <0x01>;
 +			qcom,hsusb-otg-otg-control = <0x02>;
@@ -5638,7 +5801,7 @@ index 000000000000..7c47bd67f713
 +					qcom,pon_2 {
 +						qcom,pon-type = <0x01>;
 +						qcom,pull-up = <0x01>;
-+						linux,code = <0x72>;
++						linux,code = <0x10a>;
 +					};
 +				};
 +
@@ -5670,8 +5833,8 @@ index 000000000000..7c47bd67f713
 +							function = "normal";
 +							input-enable;
 +							power-source = <0x01>;
-+							linux,phandle = <0x66>;
-+							phandle = <0x66>;
++							linux,phandle = <0x28d>;
++							phandle = <0x28d>;
 +						};
 +					};
 +				};
@@ -6244,6 +6407,18 @@ index 000000000000..7c47bd67f713
 +
 +					active-config0 {
 +						temperature = <0xfde8>;
++						hysteresis = <0x3e8>;
++						type = "passive";
++					};
++
++					active-config1 {
++						temperature = <0x105b8>;
++						hysteresis = <0x3e8>;
++						type = "passive";
++					};
++
++					active-config2 {
++						temperature = <0x10d88>;
 +						hysteresis = <0x3e8>;
 +						type = "passive";
 +					};
@@ -8241,6 +8416,7 @@ index 000000000000..7c47bd67f713
 +			qcom,mdss-prefill-pingpong-buffer-pixels = <0x1000>;
 +			linux,phandle = <0x103>;
 +			phandle = <0x103>;
++			qcom,mdss-pref-prim-intf = "dsi";
 +
 +			qcom,mdss-pp-offsets {
 +				qcom,mdss-sspp-mdss-igc-lut-off = <0x2000>;
@@ -8305,6 +8481,138 @@ index 000000000000..7c47bd67f713
 +				linux,phandle = <0x102>;
 +				phandle = <0x102>;
 +			};
++
++			qcom,mdss_dsi_auo_416p_amoled_cmd {
++				qcom,mdss-dsi-panel-name = "AUO 416p AMOLED command mode dsi panel";
++				qcom,mdss-dsi-panel-controller = <0x1fa>;
++				qcom,mdss-dsi-panel-type = "dsi_cmd_mode";
++				qcom,mdss-dsi-panel-destination = "display_1";
++				qcom,mdss-dsi-panel-framerate = <0x2d>;
++				qcom,mdss-dsi-virtual-channel-id = <0x00>;
++				qcom,mdss-dsi-stream = <0x00>;
++				qcom,mdss-dsi-panel-width = <0x1a0>;
++				qcom,mdss-dsi-panel-height = <0x1a0>;
++				qcom,mdss-dsi-h-front-porch = <0x04>;
++				qcom,mdss-dsi-h-back-porch = <0x06>;
++				qcom,mdss-dsi-h-pulse-width = <0x04>;
++				qcom,mdss-dsi-h-sync-skew = <0x00>;
++				qcom,mdss-dsi-v-back-porch = <0x01>;
++				qcom,mdss-dsi-v-front-porch = <0x01>;
++				qcom,mdss-dsi-v-pulse-width = <0x02>;
++				qcom,mdss-dsi-h-left-border = <0x00>;
++				qcom,mdss-dsi-h-right-border = <0x00>;
++				qcom,mdss-dsi-v-top-border = <0x00>;
++				qcom,mdss-dsi-v-bottom-border = <0x00>;
++				qcom,mdss-dsi-bpp = <0x18>;
++				qcom,mdss-dsi-color-order = "rgb_swap_rgb";
++				qcom,mdss-dsi-underflow-color = <0xff>;
++				qcom,mdss-dsi-border-color = <0x00>;
++				qcom,mdss-dsi-pixel-packing = "tight";
++				qcom,mdss-dsi-pixel-alignment = <0x00>;
++				qcom,mdss-dsi-on-command = <0x5010000 0x1000200 0x150100 0x02 0xfe011501 0x00 0x20af015 0x1000000 0x2fe00 0x29010000 0x52a 0x1e01bd 0x29010000 0x52b 0x19f 0x29010000 0x530 0x19f 0x29010000 0x531 0x1e01bd 0x5010000 0x212 0x150100 0x02 0x35021501 0x00 0x2532015 0x1000000 0x25100 0x15010000 0x28000266 0x150100 0x02 0x63ff0501 0x3200 0x2110005 0x100001e 0x22900>;
++				qcom,mdss-dsi-off-command = [05 01 00 00 00 00 02 28 00 05 01 00 00 78 00 02 10 00];
++				qcom,mdss-dsi-on-command-state = "dsi_lp_mode";
++				qcom,mdss-dsi-off-command-state = "dsi_hs_mode";
++				qcom,mdss-dsi-idle-on-command = [05 01 00 00 00 00 02 fe 00 05 01 00 00 1e 00 01 39];
++				qcom,mdss-dsi-idle-on-command-state = "dsi_hs_mode";
++				qcom,mdss-dsi-idle-off-command = [05 01 00 00 00 00 02 fe 00 05 01 00 00 1e 00 01 38];
++				qcom,mdss-dsi-hbm0-on-command = <0x15010000 0x2fe 0x1150100 0x02 0x11931501 0x00 0x2fe0015 0x1000000 0x26602>;
++				qcom,mdss-dsi-hbm-off-command = [15 01 00 00 00 00 02 fe 00 15 01 00 00 28 00 02 66 00 15 01 00 00 00 00 02 fe 01 15 01 00 00 00 00 02 11 80 15 01 00 00 00 00 02 fe 00];
++				qcom,mdss-dsi-h-sync-pulse = <0x01>;
++				qcom,mdss-dsi-traffic-mode = "burst_mode";
++				qcom,mdss-dsi-lane-map = "lane_map_0123";
++				qcom,mdss-dsi-bllp-eof-power-mode;
++				qcom,mdss-dsi-bllp-power-mode;
++				qcom,mdss-dsi-lane-0-state;
++				qcom,mdss-tear-check-frame-rate = <0x1194>;
++				qcom,mdss-dsi-idle-fps = <0x0f>;
++				qcom,mdss-dsi-panel-clockrate = <0x1265b500>;
++				qcom,mdss-dsi-te-pin-select = <0x01>;
++				qcom,mdss-dsi-te-dcs-command = <0x01>;
++				qcom,mdss-dsi-te-using-te-pin;
++				qcom,mdss-dsi-te-check-enable;
++				qcom,mdss-dsi-t-clk-post = <0x05>;
++				qcom,mdss-dsi-t-clk-pre = <0x12>;
++				qcom,mdss-dsi-bl-min-level = <0x01>;
++				qcom,mdss-dsi-bl-max-level = <0xff>;
++				qcom,mdss-dsi-dma-trigger = "trigger_sw";
++				qcom,mdss-dsi-mdp-trigger = "none";
++				qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_dcs";
++				qcom,mdss-dsi-reset-sequence = <0x01 0x0a>;
++				qcom,mdss-dsi-panel-timings-phy-12nm = <0x605010a 0x3010f>;
++				qcom,panel-supply-entries = <0x28e>;
++				qcom,esd-check-enabled;
++				qcom,mdss-dsi-panel-status-check-mode = "te_signal_check";
++				qcom,mdss-dsi-power-off-disable;
++				qcom,mdss-dsi-tear-disable;
++				linux,phandle = <0x296>;
++				phandle = <0x296>;
++			};
++
++			qcom,mdss_dsi_truly_rm69090_qvga_cmd_v2 {
++				qcom,mdss-dsi-panel-name = "rm69090 qvga cmd mode dsi panel V2";
++				qcom,mdss-dsi-panel-controller = <0x1fa>;
++				qcom,mdss-dsi-panel-type = "dsi_cmd_mode";
++				qcom,mdss-dsi-panel-destination = "display_1";
++				qcom,mdss-dsi-panel-framerate = <0x3c>;
++				qcom,mdss-dsi-virtual-channel-id = <0x00>;
++				qcom,mdss-dsi-stream = <0x00>;
++				qcom,mdss-dsi-panel-width = <0x170>;
++				qcom,mdss-dsi-panel-height = <0x1c0>;
++				qcom,mdss-dsi-h-front-porch = <0x32>;
++				qcom,mdss-dsi-h-back-porch = <0x1e>;
++				qcom,mdss-dsi-h-pulse-width = <0x02>;
++				qcom,mdss-dsi-h-sync-skew = <0x00>;
++				qcom,mdss-dsi-v-back-porch = <0x10>;
++				qcom,mdss-dsi-v-front-porch = <0x0c>;
++				qcom,mdss-dsi-v-pulse-width = <0x02>;
++				qcom,mdss-dsi-h-left-border = <0x00>;
++				qcom,mdss-dsi-h-right-border = <0x00>;
++				qcom,mdss-dsi-v-top-border = <0x00>;
++				qcom,mdss-dsi-v-bottom-border = <0x00>;
++				qcom,mdss-dsi-bpp = <0x18>;
++				qcom,mdss-dsi-color-order = "rgb_swap_rgb";
++				qcom,mdss-dsi-underflow-color = <0xff>;
++				qcom,mdss-dsi-border-color = <0x00>;
++				qcom,mdss-dsi-pixel-packing = "tight";
++				qcom,mdss-dsi-pixel-alignment = <0x00>;
++				qcom,mdss-dsi-on-command = <0x15010000 0x2fe 0x1150100 0x02 0x6a151501 0x00 0x2fe0015 0x1000000 0x23500 0x15010000 0x253 0x20150100 0x02 0x51ff3901 0x00 0x52a0010 0x17f3901 0x00 0x52b0000 0x1bf0501 0x7800 0x2110005 0x1000028 0x22900>;
++				qcom,mdss-dsi-off-command = [05 01 00 00 28 00 02 28 00 05 01 00 00 78 00 02 10 00 05 01 00 00 00 00 02 4f 01];
++				qcom,mdss-dsi-on-command-state = "dsi_lp_mode";
++				qcom,mdss-dsi-off-command-state = "dsi_hs_mode";
++				qcom,mdss-dsi-idle-on-command = [15 01 00 00 00 00 02 fe 00 05 01 00 00 00 00 01 39];
++				qcom,mdss-dsi-idle-off-command = [15 01 00 00 00 00 02 fe 00 15 01 00 00 00 00 02 53 20 05 01 00 00 00 00 01 38];
++				qcom,mdss-dsi-idle-on-command-state = "dsi_hs_mode";
++				qcom,mdss-dsi-idle-off-command-state = "dsi_lp_mode";
++				qcom,mdss-dsi-h-sync-pulse = <0x01>;
++				qcom,mdss-dsi-traffic-mode = "burst_mode";
++				qcom,mdss-dsi-lane-map = "lane_map_0123";
++				qcom,mdss-dsi-bllp-eof-power-mode;
++				qcom,mdss-dsi-bllp-power-mode;
++				qcom,mdss-dsi-lane-0-state;
++				qcom,mdss-dsi-panel-clockrate = <0x1265b500>;
++				qcom,mdss-dsi-te-pin-select = <0x01>;
++				qcom,mdss-dsi-te-dcs-command = <0x01>;
++				qcom,mdss-dsi-te-check-enable;
++				qcom,mdss-dsi-te-using-te-pin;
++				qcom,mdss-dsi-t-clk-post = <0x09>;
++				qcom,mdss-dsi-t-clk-pre = <0x2c>;
++				qcom,mdss-dsi-bl-min-level = <0x01>;
++				qcom,mdss-dsi-bl-max-level = <0xff>;
++				qcom,mdss-dsi-dma-trigger = "trigger_sw";
++				qcom,mdss-dsi-mdp-trigger = "none";
++				qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_dcs";
++				qcom,mdss-dsi-reset-sequence = <0x01 0x01 0x00 0x0c 0x01 0x0c>;
++				qcom,mdss-dsi-panel-timings-phy-12nm = <0x4040108 0x3010d>;
++				qcom,panel-supply-entries = <0x28e>;
++				qcom,partial-update-enabled = "single_roi";
++				qcom,partial-update-addr-offset = <0x10 0x00>;
++				qcom,panel-roi-alignment = <0x02 0x02 0x04 0x02 0x14 0x02>;
++				qcom,esd-check-enabled;
++				qcom,mdss-dsi-panel-status-check-mode = "te_signal_check";
++				linux,phandle = <0x29d>;
++				phandle = <0x29d>;
++			};
 +		};
 +
 +		qcom,mdss_dsi@0 {
@@ -8313,8 +8621,8 @@ index 000000000000..7c47bd67f713
 +			#address-cells = <0x01>;
 +			#size-cells = <0x01>;
 +			gdsc-supply = <0xfd>;
-+			vdda-supply = <0x100>;
-+			vddio-supply = <0xb9>;
++			vdda-supply = <0xb9>;
++			vddio-supply = <0x97>;
 +			qcom,msm-bus,name = "mdss_dsi";
 +			qcom,msm-bus,num-cases = <0x02>;
 +			qcom,msm-bus,num-paths = <0x01>;
@@ -8351,8 +8659,8 @@ index 000000000000..7c47bd67f713
 +				qcom,ctrl-supply-entry@0 {
 +					reg = <0x00>;
 +					qcom,supply-name = "vdda";
-+					qcom,supply-min-voltage = <0x124f80>;
-+					qcom,supply-max-voltage = <0x124f80>;
++					qcom,supply-min-voltage = "\0\f5";
++					qcom,supply-max-voltage = "\0\f5";
 +					qcom,supply-enable-load = <0x186a0>;
 +					qcom,supply-disable-load = <0x64>;
 +					qcom,supply-post-on-sleep = <0x14>;
@@ -8381,11 +8689,18 @@ index 000000000000..7c47bd67f713
 +				reg-names = "dsi_ctrl\0dsi_phy\0mmss_misc_phys";
 +				qcom,timing-db-mode;
 +				qcom,mdss-mdp = <0x103>;
-+				vddio-supply = <0xb9>;
++				vddio-supply = <0x16a>;
 +				clocks = <0xfe 0x7b 0xfe 0x80 0x48 0x7d 0xfe 0x20 0xfe 0xa5>;
 +				clock-names = "byte_clk\0pixel_clk\0core_clk\0byte_clk_rcg\0pixel_clk_rcg";
 +				linux,phandle = <0x1fa>;
 +				phandle = <0x1fa>;
++				qcom,dsi-pref-prim-pan = <0x296>;
++				pinctrl-names = "mdss_default\0mdss_sleep";
++				pinctrl-0 = <0x18a>;
++				pinctrl-1 = <0x18b>;
++				qcom,platform-te-gpio = <0x59 0x18 0x00>;
++				qcom,platform-reset-gpio = <0x59 0x3c 0x00>;
++				qcom,platform-enable-gpio = <0x59 0x45 0x00>;
 +			};
 +
 +			qcom,mdss_dsi_ctrl1@1a96000 {
@@ -8401,6 +8716,7 @@ index 000000000000..7c47bd67f713
 +				clock-names = "byte_clk\0pixel_clk\0core_clk\0byte_clk_rcg\0pixel_clk_rcg";
 +				linux,phandle = <0x1fb>;
 +				phandle = <0x1fb>;
++				status = "disabled";
 +			};
 +		};
 +
@@ -8445,7 +8761,7 @@ index 000000000000..7c47bd67f713
 +			reg = <0x1a94400 0x400 0x184d074 0x08>;
 +			reg-names = "pll_base\0gdsc_base";
 +			gdsc-supply = <0xfd>;
-+			vddio-supply = <0xb9>;
++			vddio-supply = <0x97>;
 +			clocks = <0x48 0x79>;
 +			clock-names = "iface_clk";
 +			clock-rate = <0x00>;
@@ -8498,6 +8814,7 @@ index 000000000000..7c47bd67f713
 +			qcom,ssc-ppm = <0x1388>;
 +			linux,phandle = <0x91>;
 +			phandle = <0x91>;
++			status = "disabled";
 +
 +			qcom,platform-supply-entries {
 +				#address-cells = <0x01>;
@@ -9147,6 +9464,13 @@ index 000000000000..7c47bd67f713
 +				linux,phandle = <0x22c>;
 +				phandle = <0x22c>;
 +			};
++
++			qcom,msm-dai-q6-bt-a2dp-rx {
++				compatible = "qcom,msm-dai-q6-dev";
++				qcom,msm-dai-q6-dev-id = <0x3002>;
++				linux,phandle = <0x291>;
++				phandle = <0x291>;
++			};
 +		};
 +
 +		qcom,msm-pcm-hostless {
@@ -9612,30 +9936,44 @@ index 000000000000..7c47bd67f713
 +		};
 +
 +		sound {
-+			status = "disabled";
-+			compatible = "qcom,msm8952-audio-codec";
-+			qcom,model = "msm8952-snd-card-mtp";
++			status = "okay";
++			compatible = "qcom,msm8952-dig-asoc-snd";
++			qcom,model = "sdm429w-snd-card";
 +			reg = <0xc051000 0x04 0xc051004 0x04 0xc055000 0x04 0xc052000 0x04>;
 +			reg-names = "csr_gp_io_mux_mic_ctl\0csr_gp_io_mux_spkr_ctl\0csr_gp_io_lpaif_pri_pcm_pri_mode_muxsel\0csr_gp_io_mux_quin_ctl";
-+			qcom,msm-ext-pa = "primary";
++			qcom,msm-ext-pa = "quaternary";
 +			qcom,msm-mclk-freq = <0x927c00>;
 +			qcom,msm-mbhc-hphl-swh = <0x00>;
 +			qcom,msm-mbhc-gnd-swh = <0x00>;
 +			qcom,msm-hs-micbias-type = "external";
 +			qcom,msm-micbias1-ext-cap;
-+			qcom,audio-routing = "RX_BIAS\0MCLK\0SPK_RX_BIAS\0MCLK\0INT_LDO_H\0MCLK\0RX_I2S_CLK\0MCLK\0TX_I2S_CLK\0MCLK\0MIC BIAS External\0Handset Mic\0MIC BIAS External2\0Headset Mic\0MIC BIAS External\0Secondary Mic\0AMIC1\0MIC BIAS External\0AMIC2\0MIC BIAS External2\0AMIC3\0MIC BIAS External\0ADC1_IN\0ADC1_OUT\0ADC2_IN\0ADC2_OUT\0ADC3_IN\0ADC3_OUT\0PDM_IN_RX1\0PDM_OUT_RX1\0PDM_IN_RX2\0PDM_OUT_RX2\0PDM_IN_RX3\0PDM_OUT_RX3\0WSA_SPK OUT\0VDD_WSA_SWITCH\0SpkrMono WSA_IN\0WSA_SPK OUT";
++			qcom,audio-routing = "CDC_CONN\0MCLK\0QUAT_MI2S_RX\0DIGITAL_REGULATOR\0TX_I2S_CLK\0DIGITAL_REGULATOR\0DMIC1\0Digital Mic1\0DMIC2\0Digital Mic2";
 +			qcom,cdc-us-euro-gpios = <0x59 0x3f 0x00>;
 +			qcom,cdc-us-eu-gpios = <0x106>;
 +			qcom,pri-mi2s-gpios = <0x107>;
 +			qcom,quin-mi2s-gpios = <0x108>;
 +			asoc-platform = <0x109 0x10a 0x10b 0x10c 0x10d 0x10e 0x10f 0x110 0x111 0x112 0x113 0x114>;
 +			asoc-platform-names = "msm-pcm-dsp.0\0msm-pcm-dsp.1\0msm-pcm-dsp.2\0msm-voip-dsp\0msm-pcm-voice\0msm-pcm-loopback\0msm-compress-dsp\0msm-pcm-hostless\0msm-pcm-afe\0msm-lsm-client\0msm-pcm-routing\0msm-pcm-dsp-noirq";
-+			asoc-cpu = <0x115 0x116 0x117 0x118 0x119 0x11a 0x11b 0x11c 0x11d 0x11e 0x11f 0x120 0x121 0x122 0x123 0x124 0x125 0x126 0x127 0x128 0x129 0x12a 0x12b 0x12c 0x12d 0x12e 0x12f>;
-+			asoc-cpu-names = "msm-dai-q6-auxpcm.1\0msm-dai-q6-mi2s.0\0msm-dai-q6-mi2s.1\0msm-dai-q6-mi2s.2\0msm-dai-q6-mi2s.3\0msm-dai-q6-mi2s.4\0msm-dai-q6-mi2s.6\0msm-dai-q6-dev.16384\0msmdai-q6-dev.16385\0msm-dai-q6-dev.16386\0msm-dai-q6-dev.16387\0msm-dai-q6-dev.16390\0msm-dai-q6-dev.16391\0msm-dai-q6-dev.16392\0msm-dai-q6-dev.16393\0msm-dai-q6-dev.12288\0msm-dai-q6-dev.12289\0msm-dai-q6-dev.12292\0msm-dai-q6-dev.12293\0msm-dai-q6-dev.224\0msm-dai-q6-dev.225\0msm-dai-q6-dev.241\0msm-dai-q6-dev.240\0msm-dai-q6-dev.32771\0msm-dai-q6-dev.32772\0msm-dai-q6-dev.32773\0msm-dai-q6-dev.32770";
-+			asoc-codec = <0x130>;
-+			asoc-codec-names = "msm-stub-codec.1";
++			asoc-cpu = <0x115 0x116 0x117 0x118 0x119 0x11a 0x11b 0x11c 0x11d 0x11e 0x11f 0x120 0x121 0x122 0x123 0x223 0x224 0x124 0x125 0x291 0x126 0x127 0x128 0x129 0x12a 0x12b 0x12c 0x12d 0x12e 0x12f>;
++			asoc-cpu-names = "msm-dai-q6-auxpcm.1\0msm-dai-q6-mi2s.0\0msm-dai-q6-mi2s.1\0msm-dai-q6-mi2s.2\0msm-dai-q6-mi2s.3\0msm-dai-q6-mi2s.4\0msm-dai-q6-mi2s.6\0msm-dai-q6-dev.16384\0msmdai-q6-dev.16385\0msm-dai-q6-dev.16386\0msm-dai-q6-dev.16387\0msm-dai-q6-dev.16390\0msm-dai-q6-dev.16391\0msm-dai-q6-dev.16392\0msm-dai-q6-dev.16393\0msm-dai-q6-dev.16398\0msm-dai-q6-dev.16399\0msm-dai-q6-dev.12288\0msm-dai-q6-dev.12289\0msm-dai-q6-dev.12290\0msm-dai-q6-dev.12292\0msm-dai-q6-dev.12293\0msm-dai-q6-dev.224\0msm-dai-q6-dev.225\0msm-dai-q6-dev.241\0msm-dai-q6-dev.240\0msm-dai-q6-dev.32771\0msm-dai-q6-dev.32772\0msm-dai-q6-dev.32773\0msm-dai-q6-dev.32770";
++			asoc-codec = <0x130 0x292 0x293>;
++			asoc-codec-names = "msm-stub-codec.1\0msm-dig-codec\0ext-smart-pa";
 +			linux,phandle = <0x253>;
 +			phandle = <0x253>;
++			qcom,split-a2dp;
++			asoc-wsa-codec-names;
++			asoc-wsa-codec-prefixes;
++			ext_pa_tfa98xx;
++			qcom,cdc-dmic-gpios = <0x28f>;
++			qcom,quat-mi2s-gpios = <0x290>;
++			qcom,msm-gpios = "quat_i2s\0dmic";
++			qcom,pinctrl-names = "all_off\0quat_i2s_act\0dmic_act\0quat_i2s_dmic_act";
++			pinctrl-names = "all_off\0quat_i2s_act\0dmic_act\0quat_i2s_dmic_act";
++			pinctrl-0 = <0x193 0x195 0x197 0x199>;
++			pinctrl-1 = <0x192 0x194 0x197 0x199>;
++			pinctrl-2 = <0x193 0x195 0x196 0x198>;
++			pinctrl-3 = <0x192 0x194 0x196 0x198>;
++			qcom,wcn-bt-slim = <0x01>;
 +		};
 +
 +		msm_cdc_pinctrl_us_euro_sw {
@@ -9645,6 +9983,7 @@ index 000000000000..7c47bd67f713
 +			pinctrl-1 = <0x132>;
 +			linux,phandle = <0x106>;
 +			phandle = <0x106>;
++			status = "disabled";
 +		};
 +
 +		msm_cdc_pinctrl_pri {
@@ -9654,6 +9993,7 @@ index 000000000000..7c47bd67f713
 +			pinctrl-1 = <0x135 0x136>;
 +			linux,phandle = <0x107>;
 +			phandle = <0x107>;
++			status = "disabled";
 +		};
 +
 +		msm_cdc_pinctrl_quin {
@@ -9663,6 +10003,7 @@ index 000000000000..7c47bd67f713
 +			pinctrl-1 = <0x139 0x13a>;
 +			linux,phandle = <0x108>;
 +			phandle = <0x108>;
++			status = "disabled";
 +		};
 +
 +		qcom,msm-cpe-lsm {
@@ -10869,10 +11210,10 @@ index 000000000000..7c47bd67f713
 +			compatible = "gpio-keys";
 +			label = "gpio-keys";
 +			pinctrl-names = "default";
-+			pinctrl-0 = <0x16b>;
-+			pinctrl-1 = <0x16c>;
-+			linux,phandle = <0x280>;
-+			phandle = <0x280>;
++			pinctrl-0 = <0x28b>;
++			pinctrl-1 = <0x28c>;
++			linux,phandle = <0x299>;
++			phandle = <0x299>;
 +
 +			vol_up {
 +				label = "volume_up";
@@ -10882,8 +11223,9 @@ index 000000000000..7c47bd67f713
 +				debounce-interval = <0x0f>;
 +				linux,can-disable;
 +				gpio-key,wakeup;
-+				linux,phandle = <0x281>;
-+				phandle = <0x281>;
++				linux,phandle = <0x29a>;
++				phandle = <0x29a>;
++				status = "disabled";
 +			};
 +
 +			function_1 {
@@ -10894,8 +11236,9 @@ index 000000000000..7c47bd67f713
 +				debounce-interval = <0x0f>;
 +				linux,can-disable;
 +				gpio-key,wakeup;
-+				linux,phandle = <0x282>;
-+				phandle = <0x282>;
++				linux,phandle = <0x29b>;
++				phandle = <0x29b>;
++				status = "disabled";
 +			};
 +
 +			function_2 {
@@ -10906,14 +11249,83 @@ index 000000000000..7c47bd67f713
 +				debounce-interval = <0x0f>;
 +				linux,can-disable;
 +				gpio-key,wakeup;
-+				linux,phandle = <0x283>;
-+				phandle = <0x283>;
++				linux,phandle = <0x29c>;
++				phandle = <0x29c>;
++				status = "disabled";
 +			};
++
++			stem_1 {
++				label = "STEM_1";
++				gpios = <0x59 0x23 0x01>;
++				linux,input-type = <0x01>;
++				linux,code = <0x109>;
++				gpio-key,wakeup;
++				linux,can-disable;
++				debounce-interval = <0x0f>;
++			};
++		};
++
++		dsi_pm660_panel_pwr_supply {
++			#address-cells = <0x01>;
++			#size-cells = <0x00>;
++			linux,phandle = <0x28e>;
++			phandle = <0x28e>;
++
++			qcom,panel-supply-entry@0 {
++				reg = <0x00>;
++				qcom,supply-name = "vdd";
++				qcom,supply-min-voltage = <0x2ab980>;
++				qcom,supply-max-voltage = <0x2ab980>;
++				qcom,supply-enable-load = <0x186a0>;
++				qcom,supply-disable-load = <0x64>;
++			};
++
++			qcom,panel-supply-entry@1 {
++				reg = <0x01>;
++				qcom,supply-name = "vddio";
++				qcom,supply-min-voltage = <0x1b7740>;
++				qcom,supply-max-voltage = <0x1b7740>;
++				qcom,supply-enable-load = <0x186a0>;
++				qcom,supply-disable-load = <0x64>;
++			};
++		};
++
++		msm_dig_codec {
++			compatible = "qcom,msm-digital-codec";
++			reg = <0xc0f0000 0x00>;
++			qcom,no-analog-codec;
++			cdc-vdd-digital-supply = <0x169>;
++			qcom,cdc-vdd-digital-voltage = <0x1b7740 0x1b7740>;
++			qcom,cdc-vdd-digital-current = <0x2710>;
++			qcom,cdc-on-demand-supplies = "cdc-vdd-digital";
++			linux,phandle = <0x292>;
++			phandle = <0x292>;
++		};
++
++		cdc_dmic_pinctrl {
++			compatible = "qcom,msm-cdc-pinctrl";
++			pinctrl-names = "aud_active\0aud_sleep";
++			pinctrl-0 = <0x196 0x198>;
++			pinctrl-1 = <0x197 0x199>;
++			linux,phandle = <0x28f>;
++			phandle = <0x28f>;
++		};
++
++		msm_cdc_pinctrl_quat {
++			compatible = "qcom,msm-cdc-pinctrl";
++			pinctrl-names = "aud_active\0aud_sleep";
++			pinctrl-0 = <0x192 0x194>;
++			pinctrl-1 = <0x193 0x195>;
++			linux,phandle = <0x290>;
++			phandle = <0x290>;
 +		};
 +	};
 +
 +	chosen {
-+		bootargs = "sched_enable_hmp=1 kpti=0";
++		linux,initrd-end = <0x83ad470d>;
++		linux,initrd-start = <0x83600000>;
++		kaslr-seed = <0x359070ab 0x9632e48e>;
++		bootargs = "sched_enable_hmp=1 kpti=0 console=ttyMSM0,115200,n8 androidboot.console=ttyMSM0 androidboot.selinux=permissive androidboot.hardware=hoki user_debug=30 msm_rtb.filter=0x237 ehci-hcd.park=3 androidboot.bootdevice=7824900.sdhci lpm_levels.sleep_disabled=1 earlycon=msm_serial_dm,0x78b0000 vmalloc=300M androidboot.usbconfigfs=true loop.max_part=7 androidboot.memcg=true cgroup.memory=nokmem,nosocket buildvariant=user audit=0 androidboot.emmc=true androidboot.verifiedbootstate=orange androidboot.keymaster=1 root=PARTUUID=46f94bb5-d8e3-565e-4ae7-23a7b168855f androidboot.serialno=K6F1041491B1474 androidboot.wifimacaddr=E4:A8:DF:43:76:F4 androidboot.btmacaddr=E4:A8:DF:3B:D5:D4 androidboot.vendor.btmacaddr=E4:A8:DF:3B:D5:D4 vendor.lk.commit_id=DC519FC5234C60FFB5074F301FEC37B4E00CB597 vendor.fs_bootloader_uuid=1713023742574 androidboot.bootloader=HOKI.200522.240411 androidboot.audio.use_tfa9897=true androidboot.postboot_enforce=1 gpt androidboot.baseband=apq mdss_mdp.panel=1:dsi:0:qcom,mdss_dsi_auo_416p_amoled_cmd:1:none:cfg:single_dsi rootwait ro init=/init androidboot.dtbo_idx=0 androidboot.dtb_idx=0";
 +	};
 +
 +	aliases {
@@ -10939,7 +11351,7 @@ index 000000000000..7c47bd67f713
 +
 +	memory {
 +		device_type = "memory";
-+		reg = <0x00 0x00 0x00 0x00>;
++		reg = <0x00 0x80000000 0x00 0x20000000 0x00 0xa0000000 0x00 0x20000000>;
 +	};
 +
 +	firmware {
@@ -10987,7 +11399,7 @@ index 000000000000..7c47bd67f713
 +		modem_region@0 {
 +			compatible = "removed-dma-pool";
 +			no-map;
-+			reg = <0x00 0x86800000 0x00 0x1f00000>;
++			reg = <0x00 0x86800000 0x00 0x1e00000>;
 +			linux,phandle = <0xb6>;
 +			phandle = <0xb6>;
 +		};
@@ -10995,7 +11407,7 @@ index 000000000000..7c47bd67f713
 +		adsp_fw_region@0 {
 +			compatible = "removed-dma-pool";
 +			no-map;
-+			reg = <0x00 0x88700000 0x00 0x1500000>;
++			reg = <0x00 0x88600000 0x00 0x1500000>;
 +			linux,phandle = <0xae>;
 +			phandle = <0xae>;
 +		};
@@ -11003,7 +11415,7 @@ index 000000000000..7c47bd67f713
 +		wcnss_fw_region@0 {
 +			compatible = "removed-dma-pool";
 +			no-map;
-+			reg = <0x00 0x89c00000 0x00 0x700000>;
++			reg = <0x00 0x89b00000 0x00 0x700000>;
 +			linux,phandle = <0xb2>;
 +			phandle = <0xb2>;
 +		};
@@ -11838,6 +12250,7 @@ index 000000000000..7c47bd67f713
 +		hoki_batterydata = "/qcom,battery-data";
 +	};
 +};
+\ No newline at end of file
 diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
 index e061c71f650a..459ba90b19fa 100644
 --- a/arch/arm64/boot/dts/qcom/Makefile
